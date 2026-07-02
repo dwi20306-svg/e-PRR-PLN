@@ -14,24 +14,19 @@ class ProfileController extends Controller
         return view('profile.edit', ['user' => Auth::user()]);
     }
 
-    public function update(Request $request)
-    {
-        $user = Auth::user();
+public function update(Request $request)
+{
+    $user = Auth::user();
 
-        $request->validate([
-            'name'     => 'required|string|max:100',
-            'username' => 'required|string|max:50|unique:users,username,' . $user->id,
-            'email'    => 'required|email|unique:users,email,' . $user->id,
-        ]);
+    $request->validate([
+        'username' => 'required|string|max:50|unique:users,username,' . $user->id,
+    ]);
 
-        $user->update([
-            'name'     => $request->name,
-            'username' => $request->username,
-            'email'    => $request->email,
-        ]);
+    $user->username = $request->username;
+    $user->save();
 
-        return back()->with('success', 'Profil berhasil diperbarui.');
-    }
+    return back()->with('success', 'Profil berhasil diperbarui.');
+}
 
     public function updatePassword(Request $request)
     {

@@ -24,12 +24,12 @@
     <div class="navbar__spacer"></div>
 
     <div class="navbar__user">
-        <div class="navbar__avatar">
-            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-        </div>
-        <div>
-            <div class="navbar__user-name">{{ auth()->user()->name }}</div>
-        </div>
+       <div class="navbar__avatar">
+    {{ strtoupper(substr(auth()->user()->username, 0, 1)) }}
+</div>
+<div>
+    <div class="navbar__user-name">{{ auth()->user()->username }}</div>
+</div>
         <div class="navbar__dropdown">
             <a href="{{ route('profil.edit') }}">
                 <i class="fa-solid fa-gear"></i> Kelola Profil 
