@@ -20,11 +20,37 @@ class AdminController extends Controller
 
     public function dashboard(Request $request)
     {
-        $ulp = $request->get('ulp', array_key_first($this->ulpList));
+        // $ulp = $request->get('ulp', array_key_first($this->ulpList));
 
-        $berkas = BerkasPrr::where('ulp', $ulp)
-            ->orderByDesc('created_at')
-            ->get();
+        // $berkas = BerkasPrr::where('ulp', $ulp)
+        //     ->orderByDesc('created_at')
+        //     ->get();
+
+        // $totalTagihan = $berkas->sum('tagihan');
+
+        // $statusUlp = [];
+
+        // foreach ($this->ulpList as $key => $label) {
+        //     $statusUlp[$key] = $this->hitungStatusUlp(
+        //         BerkasPrr::where('ulp', $key)->get()
+        //     );
+        // }
+
+        $ulp = $request->get('ulp');
+
+        if ($ulp) {
+            // Jika memilih salah satu ULP
+            $berkas = BerkasPrr::where('ulp', $ulp)
+                ->latest()
+                ->get();
+
+            $judul = $this->ulpList[$ulp] ?? $ulp;
+        } else {
+            // Tampilkan semua ULP
+            $berkas = BerkasPrr::latest()->get();
+
+            $judul = 'Semua ULP';
+        }
 
         $totalTagihan = $berkas->sum('tagihan');
 
@@ -36,15 +62,31 @@ class AdminController extends Controller
             );
         }
 
-        $currentStatus = $statusUlp[$ulp] ?? 'none';
+        // $currentStatus = $statusUlp[$ulp] ?? 'none';
+        $currentStatus = $ulp
+        ? ($statusUlp[$ulp] ?? 'none')
+        : 'all';
+
+        // return view('admin.dashboard', compact(
+        //     'berkas',
+        //     'ulp',
+        //     'judul',
+        //     'totalTagihan',
+        //     'statusUlp'
+        // ))->with('ulpList', $this->ulpList)
+        //   ->with('currentStatus', $currentStatus);
+
+        
 
         return view('admin.dashboard', compact(
-            'berkas',
-            'ulp',
-            'totalTagihan',
-            'statusUlp'
-        ))->with('ulpList', $this->ulpList)
-          ->with('currentStatus', $currentStatus);
+                'berkas',
+                'ulp',
+                'judul',
+                'totalTagihan',
+                'statusUlp'
+            ))
+            ->with('ulpList', $this->ulpList)
+            ->with('currentStatus', $currentStatus);
     }
 
     public function importExcel(Request $request)

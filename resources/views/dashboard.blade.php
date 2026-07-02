@@ -128,8 +128,7 @@
 
     <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">
         Kelola Data Berkas
-    </a>
-
+    </a>    
 </div>
 
 @else

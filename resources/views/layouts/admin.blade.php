@@ -92,10 +92,28 @@ foreach (array_keys($ulpList) as $key) {
     </a>
 
     {{-- Data Berkas per ULP --}}
-    <div class="sidebar__label" style="margin-top:8px">Data Berkas ULP</div>
+    <!-- <div class="sidebar__label" style="margin-top:8px">Data Berkas ULP</div>
     @foreach($ulpList as $key => $label)
         <a href="{{ route('admin.dashboard', ['ulp' => $key]) }}"
            class="sidebar__item {{ $isBerkas && $activeUlp === $key ? 'active' : '' }}">
+            <i class="fa-solid fa-folder" style="width:16px"></i>
+            {{ $label }}
+            <span class="sidebar__status-dot dot-{{ $statusUlp[$key] ?? 'none' }}"></span>
+        </a>
+    @endforeach -->
+
+    <div class="sidebar__label" style="margin-top:8px">Data Berkas ULP</div>
+
+    {{-- Semua Berkas --}}
+    <a href="{{ route('admin.dashboard') }}"
+    class="sidebar__item {{ $isBerkas && !request()->has('ulp') ? 'active' : '' }}">
+        <i class="fa-solid fa-folder-open" style="width:16px"></i>
+        Semua Berkas
+    </a>
+
+    @foreach($ulpList as $key => $label)
+        <a href="{{ route('admin.dashboard', ['ulp' => $key]) }}"
+        class="sidebar__item {{ $isBerkas && request('ulp') === $key ? 'active' : '' }}">
             <i class="fa-solid fa-folder" style="width:16px"></i>
             {{ $label }}
             <span class="sidebar__status-dot dot-{{ $statusUlp[$key] ?? 'none' }}"></span>

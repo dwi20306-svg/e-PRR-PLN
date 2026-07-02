@@ -4,8 +4,15 @@
 @section('content')
 
 <div class="page-heading">
-    <h1>{{ $ulpList[$ulp] ?? $ulp }}</h1>
+    <h1>{{ $judul }}</h1>
     <p>Data Berkas Piutang Ragu-Ragu (PRR)</p>
+</div>
+
+<div class="flex" style="justify-content:end; margin-bottom:16px;">
+    <button type="button" class="btn btn-success">
+        <i class="fas fa-file-excel"></i>
+        Export Excel
+    </button>
 </div>
 
 @include('components.tabel-berkas', [
