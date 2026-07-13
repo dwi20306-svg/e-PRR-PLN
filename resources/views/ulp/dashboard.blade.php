@@ -1,71 +1,96 @@
 @extends('layouts.ulp')
+
 @section('title', 'Dashboard ULP')
 
 @section('content')
 
 <div class="page-heading">
     <h1>{{ auth()->user()->ulp_label }}</h1>
-    <p>Dashboard Piutang Ragu-Ragu (PRR)</p>
+
+    <p>
+        Dashboard Piutang Ragu-Ragu (PRR)
+    </p>
 </div>
 
-{{-- CARD RINGKASAN --}}
-<div class="row mb-4">
+{{-- ================= CARD ================= --}}
 
-    <div class="col-lg col-md-6 mb-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase">TOTAL BERKAS PRR</h6>
-                <h1 class="fw-bold text-primary">{{ $grandBerkas }}</h1>
-                <small>berkas ULP</small>
-            </div>
-        </div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:25px;">
+
+    <div class="card" style="padding:20px">
+        <small>Total Berkas PRR</small>
+        <h2>{{ number_format($grandBerkas) }}</h2>
     </div>
 
-    <div class="col-lg col-md-6 mb-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase">TOTAL TAGIHAN</h6>
-                <h1 class="fw-bold text-primary">
-                    Rp {{ number_format($grandTotal,0,',','.') }}
-                </h1>
-                <small>total tagihan</small>
-            </div>
-        </div>
+    <div class="card" style="padding:20px">
+        <small>Total Tagihan</small>
+        <h2>
+            Rp {{ number_format($grandTotal,0,',','.') }}
+        </h2>
     </div>
 
-    <div class="col-lg col-md-6 mb-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-success text-uppercase">BERKAS LENGKAP</h6>
-                <h1 class="fw-bold text-success">{{ $grandLengkap }}</h1>
-                <small>dokumen lengkap</small>
-            </div>
-        </div>
+    <div class="card" style="padding:20px">
+        <small>Berkas Lengkap</small>
+        <h2 style="color:#28a745">
+            {{ $grandLengkap }}
+        </h2>
     </div>
 
-    <div class="col-lg col-md-6 mb-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-warning text-uppercase">BELUM LENGKAP</h6>
-                <h1 class="fw-bold text-warning">{{ $grandBelumLengkap }}</h1>
-                <small>sebagian upload</small>
-            </div>
-        </div>
+    <div class="card" style="padding:20px">
+        <small>Belum Lengkap</small>
+        <h2 style="color:#ffc107">
+            {{ $grandBelumLengkap }}
+        </h2>
     </div>
 
-    <div class="col-lg col-md-6 mb-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-danger text-uppercase">BELUM UPLOAD</h6>
-                <h1 class="fw-bold text-danger">{{ $grandBelumUpload }}</h1>
-                <small>belum ada dokumen</small>
-            </div>
-        </div>
+    <div class="card" style="padding:20px">
+        <small>Belum Upload</small>
+        <h2 style="color:#dc3545">
+            {{ $grandBelumUpload }}
+        </h2>
     </div>
 
 </div>
 
-<a href="{{ route('ulp.berkas') }}" class="btn btn-primary">
-    📋 Lihat Data Berkas
-</a>
+{{-- ================= INFORMASI ================= --}}
+
+<div class="card">
+
+    <div class="card__header">
+        <div class="card__title">
+            Ringkasan Data {{ auth()->user()->ulp_label }}
+        </div>
+    </div>
+
+    <div style="padding:20px;line-height:1.8">
+
+        <p>
+            Selamat datang di aplikasi <b>e-PRR</b>.
+        </p>
+
+        <p>
+            Dashboard ini menampilkan ringkasan jumlah berkas Piutang Ragu-Ragu (PRR)
+            yang menjadi tanggung jawab {{ auth()->user()->ulp_label }}.
+        </p>
+
+        <ul style="margin-left:20px">
+            <li>Total berkas PRR yang dikelola.</li>
+            <li>Total nominal tagihan.</li>
+            <li>Jumlah berkas yang sudah lengkap.</li>
+            <li>Jumlah berkas yang masih belum lengkap.</li>
+            <li>Jumlah berkas yang belum memiliki dokumen.</li>
+        </ul>
+
+        <div style="margin-top:20px">
+
+            <a href="{{ route('ulp.berkas.index') }}" class="btn btn-primary">
+                <i class="fa-solid fa-folder-open"></i>
+                Lihat Data Berkas
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
 @endsection

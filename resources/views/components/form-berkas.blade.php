@@ -1,9 +1,4 @@
-{{--
-    @param string $action      — URL form submit
-    @param string $method      — POST | PUT
-    @param ?BerkasPrr $berkas  — null saat tambah, ada saat edit
-    @param string $ulp         — kode ulp aktif
---}}
+
 @php
     $isEdit = isset($berkas) && $berkas;
     $sufiks = $isEdit ? $berkas?->id : 'new';
@@ -11,7 +6,7 @@
     // 1. AMBIL DATA ULP DENGAN DETEKSI KATA KUNCI (ANTI-ERROR)
     $userUlpRaw = auth()->user()->ulp_name ?? auth()->user()->ulp ?? '';
     $userUlpLower = strtolower($userUlpRaw);
-    
+
     $autoUnit = '';
     if (str_contains($userUlpLower, 'merduati')) {
         $autoUnit = '11110';
@@ -31,13 +26,13 @@
     $finalUnit = $isEdit ? $berkas->nomor_unit : $autoUnit;
 
     // Cek Role Admin secara aman
-    $isAdmin = method_exists(auth()->user(), 'isAdmin') 
-        ? auth()->user()->isAdmin() 
+    $isAdmin = method_exists(auth()->user(), 'isAdmin')
+        ? auth()->user()->isAdmin()
         : (in_array(strtolower(auth()->user()->role ?? ''), ['admin', 'administrator']));
 @endphp
 
 <div style="display: block !important; width: 100% !important; float: none !important; clear: both !important; text-align: left !important; box-sizing: border-box !important;">
-    
+
     <form method="POST" action="{{ $action }}" enctype="multipart/form-data" style="display: block !important; width: 100% !important;">
         @csrf
         @if($isEdit) @method('PUT') @endif
@@ -48,18 +43,37 @@
             <div style="font-weight: 700; font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; color: #1e293b; text-transform: uppercase;">
                 Data Pelanggan
             </div>
-            
+
             <div style="display: grid !important; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important; gap: 16px !important; width: 100% !important;">
-                
+
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     <label style="font-weight: 600; font-size: 13px; color: #475569;">Nomor Unit *</label>
                     @if($isAdmin)
-                        <select name="nomor_unit" required style="width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; background: #fff; font-size: 14px;">
-                            <option value="" disabled {{ $finalUnit ? '' : 'selected' }}>-- Pilih Nomor Unit --</option>
-                            @foreach(['11110', '11111', '11112', '11113', '11114', '11115'] as $unit)
-                                <option value="{{ $unit }}" {{ $finalUnit == $unit ? 'selected' : '' }}>{{ $unit }}</option>
-                            @endforeach
-                        </select>
+                        @php
+                        $nomorUnitMap = [
+                            'ulp_merduati' => '11110',
+                            'ulp_keudeu_bieng' => '11111',
+                            'ulp_lambaro' => '11112',
+                            'ulp_jantho' => '11113',
+                            'ulp_sabang' => '11114',
+                            'ulp_syiah_kuala' => '11115',
+                        ];
+
+                        $nomorUnit = $nomorUnitMap[$ulp] ?? '';
+                        @endphp
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ $nomorUnit }}"
+                            readonly
+                        >
+
+                        <input
+                            type="hidden"
+                            name="nomor_unit"
+                            value="{{ $nomorUnit }}"
+                        >
                     @else
                         <input type="text" name="nomor_unit" value="{{ old('nomor_unit', $finalUnit) }}" readonly required
                                style="width: 100%; height: 40px; padding: 0 10px; border-radius: 6px; font-size: 14px; background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: not-allowed;">
@@ -106,7 +120,7 @@
 
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     <label style="font-weight: 600; font-size: 13px; color: #475569;">Tanggal Periksa *</label>
-                    <input type="date" name="tanggal_periksa" value="{{ old('tanggal_periksa', $berkas?->tanggal_periksa?->format('Y-m-d') ?? '') }}" required
+                    <input type="date" name="tanggal_periksa" value="{{ old('tanggal_periksa', $berkas?->tanggal_periksa?->format('Y-m-d') ?? '') }}"
                            style="width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; font-size: 14px; background: #fff;">
                 </div>
 
@@ -163,12 +177,12 @@
                 @foreach($gambarList as $field => $label)
                 <div style="display: flex; flex-direction: column; gap: 4px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px;">
                     <label style="font-weight: 600; font-size: 12px; color: #334155; height: 32px; overflow: hidden;">{{ $label }}</label>
-                    
+
                     <label style="border: 2px dashed #cbd5e1; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #fff; text-align: center; min-height: 90px;">
                         <input type="file" name="{{ $field }}" accept="image/*" style="display: none;"
                                onchange="previewImg(this, '{{ $field }}_{{ $sufiks }}_preview')">
                         <span style="font-size: 11px; color: #64748b;">📷 Pilih Gambar</span>
-                        
+
                         @if($isEdit && $berkas?->$field)
                             <img id="{{ $field }}_{{ $sufiks }}_preview" src="{{ Storage::url($berkas->$field) }}"
                                  style="width: 100%; height: 60px; object-fit: cover; margin-top: 6px; border-radius: 4px;">
@@ -176,7 +190,7 @@
                             <img id="{{ $field }}_{{ $sufiks }}_preview" style="display: none; width: 100%; height: 60px; object-fit: cover; margin-top: 6px; border-radius: 4px;">
                         @endif
                     </label>
-                    
+
                     @if($isEdit)
                         <div style="font-size: 10px; text-align: center; font-weight: 500; color: {{ $berkas?->$field ? '#10b981' : '#ef4444' }}">
                             {{ $berkas?->$field ? '✓ Terupload' : '✗ Kosong' }}

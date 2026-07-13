@@ -1,97 +1,129 @@
 @extends('layouts.admin')
-@section('title', 'Data Berkas PRR')
+
+@section('title', 'Dashboard')
 
 @section('content')
 
 <div class="page-heading">
-    <h1>{{ $judul }}</h1>
-    <p>Data Berkas Piutang Ragu-Ragu (PRR)</p>
+    <h1>Dashboard e-PRR</h1>
+
+    <p>
+        Rekap seluruh ULP PLN UP3 Banda Aceh
+    </p>
 </div>
 
-<div class="flex" style="justify-content:end; margin-bottom:16px;">
-    <button type="button" class="btn btn-success">
-        <i class="fas fa-file-excel"></i>
-        Export Excel
-    </button>
+{{-- ================= CARD ================= --}}
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:25px;">
+
+    <div class="card" style="padding:20px">
+        <small>Total Berkas PRR</small>
+        <h2>{{ number_format($grandBerkas) }}</h2>
+    </div>
+
+    <div class="card" style="padding:20px">
+        <small>Total Tagihan</small>
+        <h2>Rp {{ number_format($grandTotal,0,',','.') }}</h2>
+    </div>
+
+    <div class="card" style="padding:20px">
+        <small>Berkas Lengkap</small>
+        <h2 style="color:#28a745">
+            {{ $grandLengkap }}
+        </h2>
+    </div>
+
+    <div class="card" style="padding:20px">
+        <small>Belum Lengkap</small>
+        <h2 style="color:#ffc107">
+            {{ $grandBelumLengkap }}
+        </h2>
+    </div>
+
+    <div class="card" style="padding:20px">
+        <small>Belum Upload</small>
+        <h2 style="color:#dc3545">
+            {{ $grandBelumUpload }}
+        </h2>
+    </div>
+
 </div>
 
-@include('components.tabel-berkas', [
-    'berkas'        => $berkas,
-    'totalTagihan'  => $totalTagihan,
-    'ulp'           => $ulp,
-    'canImport'     => true,
-    'storeRoute'    => 'admin.berkas.store',
-    'updateRoute'   => 'admin.berkas.update',
-    'deleteRoute'   => 'admin.berkas.destroy',
-    'currentStatus' => $currentStatus,
-])
+{{-- ================= TABEL ================= --}}
+
+<div class="card">
+
+    <div class="card__header">
+        <div class="card__title">
+            Rekap Data PRR per ULP
+        </div>
+    </div>
+
+    <div class="table-wrap">
+
+        <table class="tbl">
+
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nomor Unit</th>
+                    <th>Nama ULP</th>
+                    <th>Jumlah Berkas</th>
+                    <th>Lengkap</th>
+                    <th>Belum Lengkap</th>
+                    <th>Belum Upload</th>
+                    <th>Total Tagihan</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach($rekapData as $data)
+
+                <tr>
+
+                    <td>{{ $loop->iteration }}</td>
+
+                    <td>{{ $data['nomor_unit'] }}</td>
+
+                    <td>{{ $data['label'] }}</td>
+
+                    <td>{{ $data['jumlah_berkas'] }}</td>
+
+                    <td style="color:green;font-weight:bold">
+                        {{ $data['lengkap'] }}
+                    </td>
+
+                    <td style="color:orange;font-weight:bold">
+                        {{ $data['belum_lengkap'] }}
+                    </td>
+
+                    <td style="color:red;font-weight:bold">
+                        {{ $data['belum_upload'] }}
+                    </td>
+
+                    <td>
+                        Rp {{ number_format($data['total_tagihan'],0,',','.') }}
+                    </td>
+
+                </tr>
+
+                @endforeach
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<div style="margin-top:20px">
+
+    <a href="{{ route('admin.berkas.index') }}" class="btn btn-primary">
+        Kelola Data Berkas
+    </a>
+
+</div>
 
 @endsection
-
-@push('modals')
-<div class="modal-overlay" id="modal-import">
-    <div class="modal" style="max-width:450px">
-        <div class="modal__header">
-            <div class="modal__title">📥 Import Data dari Excel</div>
-            <button class="modal__close" onclick="closeModal('modal-import')">✕</button>
-        </div>
-
-        <form method="POST" action="{{ route('admin.import') }}" enctype="multipart/form-data">
-            @csrf
-
-            <div class="form-group">
-                <label>ULP Tujuan</label>
-                <select name="ulp" required>
-                    @foreach($ulpList as $key => $label)
-                        <option value="{{ $key }}" {{ $ulp == $key ? 'selected' : '' }}>
-                            {{ $label }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>File Excel (.xlsx / .xls / .csv)</label>
-                <label class="upload-label">
-                    <input type="file"
-                           name="file"
-                           accept=".xlsx,.xls,.csv"
-                           onchange="showFileName(this,'excel_name')"
-                           required>
-
-                    <span>📂 Pilih File Excel</span>
-                    <span id="excel_name" style="font-size:12px;color:#555">
-                        Belum ada file
-                    </span>
-                </label>
-            </div>
-
-            <p style="font-size:12px;color:#6B7A99;margin-bottom:16px">
-                ℹ Pastikan kolom Excel sesuai:
-                <code>nomor_unit, id_pelanggan, nama_pelanggan, tarif, daya, lembar, tagihan, tanggal_periksa, koordinat_x, koordinat_y</code>
-            </p>
-
-            <div style="display:flex;gap:10px">
-                <button type="submit" class="btn btn-yellow">
-                    📥 Import Sekarang
-                </button>
-
-                <button type="button"
-                        class="btn btn-outline"
-                        onclick="closeModal('modal-import')">
-                    Batal
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-@endpush
-
-@push('scripts')
-<script>
-function showFileName(input, spanId) {
-    document.getElementById(spanId).textContent =
-        input.files.length ? input.files[0].name : 'Belum ada file';
-}
-</script>
-@endpush

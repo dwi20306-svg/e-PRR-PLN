@@ -17,10 +17,9 @@ return new class extends Migration
             $table->integer('daya'); // dalam VA
             $table->integer('lembar');
             $table->decimal('tagihan', 15, 2);
-            $table->date('tanggal_periksa');
+            $table->date('tanggal_periksa')->nullable();
             $table->enum('kondisi_lapangan', ['bongkar rampung', 'rata dengan tanah', 'sr seri', 'sr/ok belum rampung'])->nullable();
-            $table->enum('status_berkas', [ 'belum upload', 'belum lengkap', 'lengkap'])->default('belum upload');
-            
+
             // Dokumen gambar
             $table->string('gambar_tul_vi01')->nullable();  // Surat Pemutusan
             $table->string('gambar_tul_vi03')->nullable();  // Pembongkaran

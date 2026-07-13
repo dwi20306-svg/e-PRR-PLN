@@ -18,7 +18,7 @@ class RoleMiddleware
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
-            return redirect()->route('ulp.berkas');
+            return redirect()->route('ulp.dashboard');
         }
 
         return $next($request);

@@ -1,30 +1,55 @@
-{{--
-    @param Collection $berkas
-    @param float      $totalTagihan
-    @param string     $ulp
-    @param bool       $canImport
-    @param string     $storeRoute
-    @param string     $updateRoute
-    @param string     $deleteRoute
-    @param string     $currentStatus
---}}
+
 
 <div class="card">
     <div class="card__header">
         <div class="card__title">Daftar Berkas PRR (Piutang Ragu-Ragu)</div>
 
-        {{-- Import Excel (admin saja) --}}
-        @if($canImport)
-        <button class="btn btn-yellow btn-sm" onclick="openModal('modal-import')">
-            📥 Import Excel
+        <div style="display:flex;gap:8px">
+
+        {{-- Tambah hanya halaman ULP --}}
+        @if($ulp)
+        <button class="btn btn-primary btn-sm"
+                onclick="openModal('modal-tambah')">
+            ➕ Tambah Berkas
         </button>
         @endif
 
-        {{-- Tombol Tambah --}}
-        <button class="btn btn-primary btn-sm" onclick="openModal('modal-tambah')">
-            ➕ Tambah Berkas
-        </button>
+</div>
     </div>
+<div style="padding: 16px 20px;">
+    <form method="GET"
+        action="{{ url()->current() }}"
+        style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
+
+        @if(request('ulp'))
+            <input type="hidden"
+                name="ulp"
+                value="{{ request('ulp') }}">
+        @endif
+
+        <input
+            type="text"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Cari ID Pelanggan, Nama Pelanggan, atau Nomor Unit..."
+            class="form-control"
+            style="width:320px;">
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fa fa-search"></i> Cari
+        </button>
+
+        @if(request('search'))
+            <a href="{{ request('ulp')
+                ? route('admin.berkas.index',['ulp'=>request('ulp')])
+                : url()->current() }}"
+                class="btn btn-danger">
+                Reset
+            </a>
+        @endif
+
+    </form>
+</div>
 
     <div class="table-wrap">
         <table class="tbl">
@@ -44,7 +69,9 @@
                     <th>Foto Berkas</th>
                     <th>Koordinat</th>
                     <th>PDF Scan</th>
+                    @if($ulp)
                     <th>Aksi</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -74,7 +101,7 @@
                     };
                 @endphp
                 <tr>
-                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $berkas->firstItem() + $i }}</td>
                     <td>{{ $b->nomor_unit }}</td>
                     <td>{{ $b->id_pelanggan }}</td>
                     <td style="white-space:nowrap">{{ $b->nama_pelanggan }}</td>
@@ -82,7 +109,13 @@
                     <td>{{ number_format($b->daya) }}</td>
                     <td>{{ $b->lembar }}</td>
                     <td style="white-space:nowrap">Rp {{ number_format($b->tagihan, 0, ',', '.') }}</td>
-                    <td style="white-space:nowrap">{{ $b->tanggal_periksa->format('d/m/Y') }}</td>
+                    <td style="white-space:nowrap">
+                        @if($b->tanggal_periksa)
+                            {{ $b->tanggal_periksa->format('d/m/Y') }}
+                        @else
+                            <span style="color:#999;">-</span>
+                        @endif
+                    </td>
 
                     {{-- Kondisi Lapangan --}}
                     <td style="white-space:nowrap">
@@ -129,6 +162,7 @@
                     </td>
 
                     {{-- Aksi --}}
+                    @if($ulp)
                     <td>
                         <div class="actions">
                             <button class="btn btn-yellow btn-sm"
@@ -143,13 +177,23 @@
                             </form>
                         </div>
                     </td>
+                    @endif
+
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="15" style="text-align:center;padding:40px;color:#9CA3AF">
+                    <td colspan="{{ $ulp ? 15 : 14 }}"
+                        style="text-align:center;padding:40px;color:#9CA3AF">
+
                         <div style="font-size:32px;margin-bottom:8px">📂</div>
-                        Belum ada data berkas PRR.<br>
-                        <span style="font-size:12px">Klik "Tambah Berkas" untuk memulai.</span>
+
+                        @if($ulp)
+                            Belum ada data berkas PRR.<br>
+                            Klik <b>Tambah Berkas</b> untuk memulai.
+                        @else
+                            Belum ada data berkas PRR.
+                        @endif
+
                     </td>
                 </tr>
                 @endforelse
@@ -159,14 +203,51 @@
                     <td colspan="7" style="text-align:right;padding-right:12px">
                         <strong>TOTAL TAGIHAN</strong>
                     </td>
-                    <td colspan="8">
-                        <strong>Rp {{ number_format($totalTagihan, 0, ',', '.') }}</strong>
+
+                    <td colspan="{{ $ulp ? 8 : 7 }}">
+                        <strong>
+                            Rp {{ number_format($totalTagihan,0,',','.') }}
+                        </strong>
                     </td>
                 </tr>
             </tfoot>
         </table>
     </div>
 </div>
+
+@if($berkas->hasPages())
+
+<div style="display:flex;justify-content:space-between;align-items:center;padding:20px;flex-wrap:wrap;gap:15px;">
+
+    <div style="font-size:14px;color:#555;">
+
+        Menampilkan
+
+        <b>{{ $berkas->firstItem() }}</b>
+
+        -
+
+        <b>{{ $berkas->lastItem() }}</b>
+
+        dari
+
+        <b>{{ number_format($berkas->total()) }}</b>
+
+        data
+
+    </div>
+
+    {{ $berkas->onEachSide(1)->links('vendor.pagination.custom') }}
+
+</div>
+
+@endif
+
+@if($ulp)
+    <p style="font-size:12px;color:#6B7A99;margin-top:8px">
+        ℹ Status berkas dihitung otomatis berdasarkan jumlah dokumen yang terupload.
+    </p>
+@endif
 
 {{-- ══ MODAL TAMBAH ══ --}}
 <div class="modal-overlay" id="modal-tambah">
@@ -184,6 +265,7 @@
     </div>
 </div>
 
+@if($ulp)
 {{-- ══ MODAL EDIT (satu per baris) ══ --}}
 @foreach($berkas as $b)
 <div class="modal-overlay" id="modal-edit-{{ $b->id }}">
@@ -201,6 +283,7 @@
     </div>
 </div>
 @endforeach
+@endif
 
 {{-- ══ MODAL FOTO BERKAS (satu per baris) ══ --}}
 @foreach($berkas as $b)

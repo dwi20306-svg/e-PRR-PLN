@@ -14,13 +14,18 @@
 {{-- ══ NAVBAR ══ --}}
 <nav class="navbar">
     <div class="navbar__brand">
-        <img src="{{ asset('images/logo-pln.png') }}" alt="PLN"
-             onerror="this.style.display='none'">
+
+        <img src="{{ asset('images/logo_pln.png') }}"
+            alt="Logo PLN"
+            class="navbar__logo">
+
         <div class="navbar__brand-text">
             <span>e-PRR</span>
             <span class="sub">{{ auth()->user()->ulp_label }}</span>
         </div>
+
     </div>
+
     <div class="navbar__spacer"></div>
 
     <div class="navbar__user">
@@ -32,13 +37,13 @@
 </div>
         <div class="navbar__dropdown">
             <a href="{{ route('profil.edit') }}">
-                <i class="fa-solid fa-gear"></i> Kelola Profil 
+                <i class="fa-solid fa-gear"></i> Kelola Profil
             </a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit">
                     <i class="fa-solid fa-right-from-bracket"></i> Keluar
-                </button>   
+                </button>
             </form>
         </div>
     </div>
@@ -51,6 +56,16 @@
     @endif
     @if(session('error'))
         <div class="alert alert-error">✗ {{ session('error') }}</div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-error">
+            <ul style="margin:0;padding-left:20px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
     @yield('content')

@@ -12,19 +12,20 @@
     <div class="login-card">
 
         {{-- Logo --}}
-        <div class="login-logo">
-            <img src="{{ asset('images/logo-pln.png') }}" alt="PLN"
-                 onerror="this.style.display='none'"
-                 style="height:70px;object-fit:contain">
+        <div class="login-header">
+
+            <img src="{{ asset('images/logo_pln.png') }}"
+                alt="Logo PLN"
+                class="login-logo">
+
+            <h1 class="login-heading">e-PRR</h1>
+
+            <p class="login-subtitle">Sistem Piutang Ragu-Ragu</p>
+            <p class="login-subtitle">PLN UP3 Banda Aceh</p>
+
         </div>
 
-        <div class="login-title">e-PRR</div>
-        <div class="login-sub">
-            Sistem Piutang Ragu-Ragu<br>
-            PLN UP3 Banda Aceh
-        </div>
-
-        {{-- Alert error --}}
+            {{-- Alert error --}}
         @if($errors->any())
             <div class="alert alert-error" style="margin-bottom:16px">
                 {{ $errors->first() }}

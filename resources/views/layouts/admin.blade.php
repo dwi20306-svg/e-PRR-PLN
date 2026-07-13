@@ -13,13 +13,17 @@
 
 {{-- ══ NAVBAR ══ --}}
 <nav class="navbar">
-    <a href="{{ route('dashboard') }}" class="navbar__brand">
-        <img src="{{ asset('images/logo-pln.png') }}" alt="PLN"
-             onerror="this.style.display='none'">
+    <a href="{{ route('admin.dashboard') }}" class="navbar__brand">
+
+        <img src="{{ asset('images/logo_pln.png') }}"
+            alt="Logo PLN"
+            class="navbar__logo">
+
         <div class="navbar__brand-text">
             <span>e-PRR</span>
             <span class="sub">UP3 BANDA ACEH</span>
         </div>
+
     </a>
     <div class="navbar__spacer"></div>
 
@@ -55,8 +59,8 @@ $ulpList = [
     'ulp_keudeu_bieng' => 'ULP Keudeu Bieng',
 ];
 $activeUlp   = request('ulp', array_key_first($ulpList));
-$isDashboard = request()->routeIs('dashboard');
-$isBerkas    = request()->routeIs('admin.dashboard');
+$isDashboard = request()->routeIs('admin.dashboard');
+$isBerkas    = request()->routeIs('admin.berkas.index');
 
 // Hitung status tiap ULP
 $statusUlp    = [];
@@ -85,7 +89,7 @@ foreach (array_keys($ulpList) as $key) {
 
     {{-- Dashboard --}}
     <div class="sidebar__label">Menu</div>
-    <a href="{{ route('dashboard') }}"
+    <a href="{{ route('admin.dashboard') }}"
        class="sidebar__item {{ $isDashboard ? 'active' : '' }}">
         <i class="fa-solid fa-house" style="width:16px"></i>
         Dashboard
@@ -94,7 +98,7 @@ foreach (array_keys($ulpList) as $key) {
     {{-- Data Berkas per ULP --}}
     <!-- <div class="sidebar__label" style="margin-top:8px">Data Berkas ULP</div>
     @foreach($ulpList as $key => $label)
-        <a href="{{ route('admin.dashboard', ['ulp' => $key]) }}"
+        <a href="{{ route('admin.berkas.index', ['ulp' => $key]) }}"
            class="sidebar__item {{ $isBerkas && $activeUlp === $key ? 'active' : '' }}">
             <i class="fa-solid fa-folder" style="width:16px"></i>
             {{ $label }}
@@ -105,14 +109,14 @@ foreach (array_keys($ulpList) as $key) {
     <div class="sidebar__label" style="margin-top:8px">Data Berkas ULP</div>
 
     {{-- Semua Berkas --}}
-    <a href="{{ route('admin.dashboard') }}"
+    <a href="{{ route('admin.berkas.index') }}"
     class="sidebar__item {{ $isBerkas && !request()->has('ulp') ? 'active' : '' }}">
         <i class="fa-solid fa-folder-open" style="width:16px"></i>
         Semua Berkas
     </a>
 
     @foreach($ulpList as $key => $label)
-        <a href="{{ route('admin.dashboard', ['ulp' => $key]) }}"
+        <a href="{{ route('admin.berkas.index', ['ulp' => $key]) }}"
         class="sidebar__item {{ $isBerkas && request('ulp') === $key ? 'active' : '' }}">
             <i class="fa-solid fa-folder" style="width:16px"></i>
             {{ $label }}
@@ -124,10 +128,93 @@ foreach (array_keys($ulpList) as $key) {
 {{-- ══ KONTEN UTAMA ══ --}}
 <main class="main">
     @if(session('success'))
-        <div class="alert alert-success">✓ {{ session('success') }}</div>
+        <div class="alert alert-success">
+            ✓ {{ session('success') }}
+        </div>
     @endif
+
+    @if(session('warning'))
+
+    <div class="alert alert-warning">
+
+        <h4 style="margin-bottom:10px">
+            📥 Import Selesai
+        </h4>
+
+        <p>
+            ✅
+            <b>{{ session('success_count') }}</b>
+            data berhasil diimport.
+        </p>
+
+        <p>
+            ❌
+            <b>{{ session('failed_count') }}</b>
+            data gagal diimport.
+        </p>
+
+        <br>
+
+        <a
+            href="{{ route('admin.import.error', session('download_error')) }}"
+            class="btn btn-warning">
+
+            <i class="fas fa-download"></i>
+
+            Download Laporan Error
+
+        </a>
+
+    </div>
+
+    @endif
+
     @if(session('error'))
-        <div class="alert alert-error">✗ {{ session('error') }}</div>
+        <div class="alert alert-error">
+            ✗ {{ session('error') }}
+        </div>
+    @endif
+
+    @if(session('import_errors'))
+
+    <div class="alert alert-warning">
+
+        <h4 style="margin:0 0 10px 0;">
+            📥 Import selesai
+        </h4>
+
+        <div style="margin-bottom:6px">
+            ✅ <b>{{ session('success_count') }}</b> data berhasil diimport
+        </div>
+
+        <div style="margin-bottom:15px">
+            ❌ <b>{{ session('failed_count') }}</b> data gagal diimport
+        </div>
+
+        <strong>Detail kesalahan:</strong>
+
+        <ul style="margin-top:8px;padding-left:20px">
+
+            @foreach(session('import_errors') as $error)
+
+                <li>{{ $error }}</li>
+
+            @endforeach
+
+        </ul>
+
+    </div>
+
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-error">
+            <ul style="margin:0;padding-left:20px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
     @yield('content')

@@ -10,34 +10,45 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Admin UP3
-        User::create([
-            'name'     => 'Admin UP3 Banda Aceh',
-            'username' => 'admin_up3',
-            'email'    => 'admin@up3bandaaceh.pln.co.id',
-            'password' => Hash::make('admin123'),
-            'role'     => 'admin',
-        ]);
+        // ================= ADMIN =================
 
-        // Akun ULP
+        User::firstOrCreate(
+            ['username' => 'admin_up3'],
+            [
+                'name'     => 'Admin UP3 Banda Aceh',
+                'password' => Hash::make('admin123'),
+                'role'     => 'admin',
+            ]
+        );
+
+        // ================= PETUGAS ULP =================
+
         $ulps = [
-            ['ulp_syiah_kuala', 'ULP Syiah Kuala', 'syiahkuala'],
-            ['ulp_jantho',      'ULP Jantho',      'jantho'],
-            ['ulp_sabang',      'ULP Sabang',      'sabang'],
-            ['ulp_merduati',    'ULP Merduati',    'merduati'],
-            ['ulp_lambaro',     'ULP Lambaro',     'lambaro'],
-            ['ulp_keudeu_bieng', 'ULP Keudeu Bieng', 'keudeubieng'],
+
+            ['ulp_syiah_kuala',  'ULP Syiah Kuala',  'syiahkuala',   '11115'],
+            ['ulp_jantho',       'ULP Jantho',       'jantho',       '11113'],
+            ['ulp_sabang',       'ULP Sabang',       'sabang',       '11114'],
+            ['ulp_merduati',     'ULP Merduati',     'merduati',     '11110'],
+            ['ulp_lambaro',      'ULP Lambaro',      'lambaro',      '11112'],
+            ['ulp_keudeu_bieng', 'ULP Keudeu Bieng', 'keudeubieng',  '11111'],
+
         ];
 
-        foreach ($ulps as [$key, $name, $user]) {
-            User::create([
-                'name'     => 'Petugas ' . $name,
-                'username' => 'petugas_' . $user,
-                'email'    => $user . '@up3bandaaceh.pln.co.id',
-                'password' => Hash::make('ulp123'),
-                'role'     => 'ulp',
-                'ulp_name' => $key,
-            ]);
+        foreach ($ulps as [$key, $name, $user, $password]) {
+
+            User::firstOrCreate(
+
+                ['username' => 'petugas_'.$user],
+
+                [
+                    'name'      => 'Petugas '.$name,
+                    'password'  => Hash::make($password),
+                    'role'      => 'ulp',
+                    'ulp_name'  => $key,
+                ]
+
+            );
+
         }
     }
 }

@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('username')->unique();
-            $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'ulp']);
             $table->enum('ulp_name', [

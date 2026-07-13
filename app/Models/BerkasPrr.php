@@ -9,28 +9,27 @@ class BerkasPrr extends Model
     protected $table = 'berkas_prr';
 
     protected $fillable = [
-        'nomor_unit', 
-        'id_pelanggan', 
-        'nama_pelanggan', 
+        'nomor_unit',
+        'id_pelanggan',
+        'nama_pelanggan',
         'tarif',
-        'daya', 
-        'lembar', 
-        'tagihan', 
+        'daya',
+        'lembar',
+        'tagihan',
         'tanggal_periksa',
-        'gambar_tul_vi01', 
-        'gambar_tul_vi03', 
+        'gambar_tul_vi01',
+        'gambar_tul_vi03',
         'gambar_spk',
-        'gambar_berita_acara', 
-        'gambar_pdp', 
+        'gambar_berita_acara',
+        'gambar_pdp',
         'gambar_tug10',
-        'gambar_invoice', 
+        'gambar_invoice',
         'gambar_rumah',
-        'koordinat_x', 
+        'koordinat_x',
         'koordinat_y',
-        'pdf_scan', 'ulp', 
-        'user_id', 
-        'kondisi_lapangan', 
-        'status_berkas'
+        'pdf_scan', 'ulp',
+        'user_id',
+        'kondisi_lapangan',
     ];
 
     protected $casts = [
