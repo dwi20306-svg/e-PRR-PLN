@@ -20,12 +20,9 @@ class BerkasPrrController extends Controller
      */
     public function index(Request $request)
     {
-        if ($ulp && !array_key_exists($ulp, $this->ulpList)) {
-            abort(404);
-        }
-
         $user = Auth::user();
         $ulp = $user->ulp_name;
+
         $search = $request->get('search');
 
         $query = BerkasPrr::where('ulp', $ulp);
@@ -37,7 +34,7 @@ class BerkasPrrController extends Controller
                 ->orWhere('nomor_unit', 'like', "%{$search}%");
             });
         }
-        
+
         $totalTagihan = (clone $query)->sum('tagihan');
 
         $berkas = $query->latest()->paginate(20)->withQueryString();
@@ -57,10 +54,6 @@ class BerkasPrrController extends Controller
      */
     public function store(Request $request)
     {
-        if ($berkasPrr->ulp != Auth::user()->ulp_name) {
-            abort(403);
-        }
-
         $user = Auth::user();
         $ulp  = $user->ulp_name;
 

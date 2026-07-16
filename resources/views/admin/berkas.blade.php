@@ -88,32 +88,58 @@
 
         </div>
 
-        <p style="font-size:12px;color:#6B7A99;margin-bottom:16px">
+        <div class="import-info">
 
-            ℹ Kolom Excel harus berurutan sebagai berikut:
+            <p class="import-info-text">
 
-            <br><br>
+                ℹ <strong>Kolom Excel harus berurutan sebagai berikut:</strong>
 
-            <b>
-                nomor_unit,
-                id_pelanggan,
-                nama_pelanggan,
-                tarif,
-                daya,
-                lembar,
-                tagihan,
-                tanggal_periksa,
-                koordinat_x,
-                koordinat_y,
-                kondisi_lapangan
-            </b>
+                <br><br>
 
-            <br><br>
+                <strong>
+                    nomor_unit,
+                    id_pelanggan,
+                    nama_pelanggan,
+                    tarif,
+                    daya,
+                    lembar,
+                    tagihan,
+                    tanggal_periksa,
+                    koordinat_x,
+                    koordinat_y,
+                    kondisi_lapangan
+                </strong>
 
-            Nomor Unit akan digunakan sistem untuk menentukan ULP secara otomatis.
+                <br><br>
 
-        </p>
+                • <strong>Nomor Unit</strong> akan digunakan sistem untuk menentukan ULP secara otomatis.
 
+                <br><br>
+
+                • <strong>Kolom <code>kondisi_lapangan</code></strong> bersifat <strong>opsional</strong> (boleh dikosongkan).
+                Jika diisi, nilainya <strong>harus sama persis</strong> dengan salah satu pilihan berikut:
+
+            </p>
+
+            <ul class="import-info-list">
+                <li><strong>bongkar rampung</strong></li>
+                <li><strong>rata dengan tanah</strong></li>
+                <li><strong>sr seri</strong></li>
+                <li><strong>sr/ok belum rampung</strong></li>
+            </ul>
+
+            <div class="import-warning">
+                <div class="import-warning-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+
+                <div class="import-warning-text">
+                    Jika nilainya tidak sesuai, maka baris tersebut akan ditolak
+                    dan ditampilkan pada <strong>file Excel hasil error</strong>.
+                </div>
+            </div>
+
+        </div>
         <div style="display:flex;gap:10px">
 
             <button

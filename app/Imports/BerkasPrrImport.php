@@ -271,23 +271,27 @@ class BerkasPrrImport implements ToModel, WithHeadingRow
         }
 
         // Validasi Kondisi Lapangan
-        if (
-            !empty($row['kondisi_lapangan']) &&
-            !in_array(
-                strtolower(trim($row['kondisi_lapangan'])),
-                [
-                    'bongkar rampung',
-                    'rata dengan tanah',
-                    'sr seri',
-                    'sr/ok belum rampung',
-                ]
-            )
-        ) {
+        $kondisiValid = [
+        'bongkar rampung',
+        'rata dengan tanah',
+        'sr seri',
+        'sr/ok belum rampung',
+        ];
 
-            return $this->gagal(
-                $row,"Kondisi Lapangan pada ID {$idPelanggan} tidak valid."
-            );
+        if (!empty($row['kondisi_lapangan'])) {
 
+            $kondisi = strtolower(trim($row['kondisi_lapangan']));
+
+            if (!in_array($kondisi, $kondisiValid)) {
+
+                return $this->gagal(
+                    $row,
+                    "Kondisi Lapangan '{$row['kondisi_lapangan']}' tidak valid. Pilihan yang diperbolehkan hanya: Bongkar Rampung, Rata dengan Tanah, SR Seri, atau SR/OK Belum Rampung."
+                );
+            }
+
+            // Supaya yang tersimpan selalu rapi
+            $row['kondisi_lapangan'] = $kondisi;
         }
 
         try {

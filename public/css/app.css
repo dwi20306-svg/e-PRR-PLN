@@ -609,4 +609,64 @@ input:focus, select:focus, textarea:focus {
 
 }
 
+/* style untuk informasi kolom import */
+
+.import-info-text {
+    font-size: 12px;
+    color: #6B7A99;
+    line-height: 1.7;
+    margin-bottom: 12px;
+}
+
+.import-info-list {
+    margin-top: 8px;
+    margin-bottom: 18px;
+    padding-left: 18px;
+    color: #1F2A44;
+}
+
+.import-info-list li {
+    margin-bottom: 4px;
+}
+
+.import-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    padding: 12px 16px;
+
+    background: #F7FAFF;
+    border: 1px solid #D7E6FF;
+    border-radius: 10px;
+
+    margin-top: 16px;
+    margin-bottom: 22px;
+}
+
+.import-warning-icon {
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #2F80ED;
+    font-size: 18px;
+}
+
+.import-warning-text {
+    font-size: 12px;
+    color: #6B7A99;
+    line-height: 1.7;
+}
+
+.import-warning-text strong {
+    color: #344054;
+    font-weight: 600;
+}
+
 
